@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var multer = require('multer');
 
 var User = require('../models/user');
 
@@ -22,7 +23,8 @@ router.post('/register', function(req, res){
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
-
+	var hasAvatar = (req.body.avatar) ? true : false;
+	console.log(req.body)
 	// Validation
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
@@ -45,14 +47,28 @@ router.post('/register', function(req, res){
 			password: password
 		});
 
-		User.createUser(newUser, function(err, user){
-			if(err) throw err;
-			console.log(user);
+		User.createUser(newUser, (err, user) => {
+				if(err) throw err;
+				else {
+					// var upload = multer({ storage: storage }).single('avatar');
+					// var storage = multer.diskStorage({
+					// 		destination: function (req, file, cb) {
+					// 				cb(null, 'public/uploads/avatars/')
+					// 		},
+					// 		filename: function (req, file, cb) {
+					// 				cb(null, user._id + '-' + Date.now() + '.jpg')
+					// 		}
+					// });
+					// upload(req, res, function (err) {
+					// 		if (err) {
+					// 			console.log(err)
+					// 				// An error occurred when uploading
+					// 		}
+					// })
+				}
 		});
-
-		req.flash('success_msg', 'You are registered and can now login');
-
-		res.redirect('/users/login');
+			req.flash('success_msg', 'You are registered and can now login');
+			res.redirect('/users/login');
 	}
 });
 
