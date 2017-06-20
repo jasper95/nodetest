@@ -11,7 +11,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/loginapp');
+mongoose.connect('mongodb://localhost/testproject');
 var db = mongoose.connection;
 
 var routes = require('./routes/index');
@@ -59,7 +59,19 @@ app.use(expressValidator({
       msg   : msg,
       value : value
     };
+  },
+  customValidators: {
+    notEqual: function(param, value){
+      return param !== value;
+    },
+    isValidImage : function(param){
+      if(param)
+        return (['jpg', 'png', 'jpeg'].indexOf(param) > 0);
+      else
+        return true;
+    }
   }
+
 }));
 
 // Connect Flash
@@ -70,6 +82,7 @@ app.use(function (req, res, next) {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
+  res.locals.form_errors = req.flash('form_errors');
   res.locals.user = req.user || null;
   next();
 });

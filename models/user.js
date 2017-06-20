@@ -15,7 +15,8 @@ var UserSchema = mongoose.Schema({
 	},
 	name: {
 		type: String
-	}
+	},
+	hasAvatar: Boolean
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);

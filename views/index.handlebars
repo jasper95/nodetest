@@ -1,8 +1,28 @@
  <h2 class="page-header">Dashboard</h2>
-<p>Welcome to your dashboard</p>
-<img src="uploads/avatar-1497852298770.jpg">
+ {{#if user.hasAvatar}}
+  <img src="uploads/avatars/{{user.username}}.jpg" class="img-rounded" alt="Cinque Terre" width="100" height="100">
+{{else}}
+  <img src="uploads/default-user-image.png" class="img-rounded" alt="Cinque Terre" width="100" height="100">
+{{/if}}
 
+<p>{{ user.name}}</p>
+
+{{#each pictures}}
+  <img src="{{filename}}" class="img-rounded" width="100" height="100">
+{{/each}}
 <form action="/" method="POST" enctype="multipart/form-data">
-  <input type="file" name="avatar">
-  <input type="submit" value="submit">
+  <input type="file" id="picture" name="avatar">
+  <input type="submit" disabled id="upload" value="submit">
 </form>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script>
+  $(document).ready(function(){
+    let submit = $('#upload');
+    $('#picture').on('change', function(){
+      if($('#picture').get(0).files.length > 0)
+          submit.prop("disabled", false);
+      else
+          submit.prop('disabled', true);
+    })
+  });
+</script>
