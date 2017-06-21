@@ -15,7 +15,6 @@ jQuery(function($){
   });
 })
 let readURL = function(input, preview) {
-  console.log("what");
   if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {

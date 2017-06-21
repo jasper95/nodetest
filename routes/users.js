@@ -17,24 +17,26 @@ const storage = multer.diskStorage({
 		}
 });
 
-function validateRegisterForm(req){
+const validateRegisterForm = function(req){
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
 	req.checkBody('username', 'Username is required').notEmpty();
 	req.checkBody('password', 'Password is required').notEmpty();
 	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
-	//req.checkBody('ext', 'Not a valid image').isValidImage();
+	req.checkBody('ext', 'Uploaded file not an image').isValidImage();
 }
 
 const upload = multer({
-	 storage: storage,
-	 fileFilter: function(req, file, cb){
-			validateRegisterForm(req)
-			req.getValidationResult().then(function(result) {
-				cb(null, result.isEmpty())
-			});
-	 }
+	storage: storage,
+ 	fileFilter: function(req, file, cb){
+		const ext = file.originalname.split('.').pop();
+		const isValidExt = (['jpg', 'png', 'jpeg'].indexOf(ext) >= 0);
+		validateRegisterForm(req)
+		req.getValidationResult().then(function(result) {
+			cb(null, result.isEmpty() && isValidExt)
+		});
+	}
 });
 
 // Register
@@ -63,9 +65,8 @@ router.get('/login', function(req, res){
 
 // Register User
 router.post('/register', upload.single('avatar'), function(req, res){
-	const {name, email, username, password, password2} = req.body;
+	const {name, email, username, password, password2, ext} = req.body;
 	const hasAvatar = (req.file) ? true : false;
-
 	const respondError = (req, errors) => {
 		req.flash('form_errors', errors.useFirstErrorOnly().array());
 		req.session.oldForm = {

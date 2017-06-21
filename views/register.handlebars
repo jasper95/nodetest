@@ -38,7 +38,7 @@
       </div>
       <img id='img-upload' class="img-thumbnail" width="140" height="140"/>
     </div>
-    <!-- <input type="hidden" name="ext" id="ext"/> -->
+    <input type="hidden" name="ext" id="ext"/>
     <button type="submit" class="btn btn-default">Submit</button>
   </form>
 </div>
@@ -47,10 +47,9 @@
 <script>
   jQuery(function($){
     $("#imgInp").change(function(){
-      console.log("asd")
   	    readURL(this, $('#img-upload'));
-        // var ext  = $(this).val().split('.').pop();
-        // $('#ext').val(ext);
+        var ext  = $(this).val().split('.').pop();
+        $('#ext').val(ext);
   	});
   });
 </script>

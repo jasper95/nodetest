@@ -66,7 +66,7 @@ app.use(expressValidator({
     },
     isValidImage : function(param){
       if(param)
-        return (['jpg', 'png', 'jpeg'].indexOf(param) > 0);
+        return (['jpg', 'png', 'jpeg'].indexOf(param) >= 0);
       else
         return true;
     }

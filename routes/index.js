@@ -4,6 +4,28 @@ const router = express.Router();
 const Picture = require('../models/picture');
 const randomstring = require('randomstring');
 
+let isUploaded;
+let filename;
+
+const storage = multer.diskStorage({
+		destination: function (req, file, cb) {
+				cb(null, 'public/uploads/pictures')
+		},
+		filename: function (req, file, cb) {
+				cb(null, filename)
+		}
+});
+const upload = multer({
+	storage: storage,
+	fileFilter : (req, file, cb) => {
+		const ext = file.originalname.split('.').pop();
+		isUploaded = (['jpg', 'png', 'jpeg'].indexOf(ext) >= 0);
+		if(isUploaded)
+			filename = randomstring.generate();
+		cb(null, isUploaded)
+	}
+}).single('avatar')
+
 // Get Homepage
 router.get('/', ensureAuthenticated, function(req, res){
 	Picture.find({}, (err, pics) => {
@@ -15,24 +37,17 @@ router.get('/', ensureAuthenticated, function(req, res){
 });
 
 router.post('/', ensureAuthenticated, function (req, res) {
-	const filename  = randomstring.generate() + '.jpg';
-	const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-          cb(null, 'public/uploads/pictures')
-      },
-      filename: function (req, file, cb) {
-          cb(null, filename)
-      }
-  });
-
-  const upload = multer({ storage: storage }).single('avatar');
-
   upload(req, res, function (err) {
       if (err) throw err;
-			Picture.create({filename : 'uploads/pictures/' + filename}, function(picErr, newPic){
-				req.flash('success_msg','Picture successfully uploaded');
+			if(isUploaded){
+				Picture.create({filename : 'uploads/pictures/' + filename}, function(picErr, newPic){
+					req.flash('success_msg','Picture successfully uploaded');
+					res.redirect('/');
+				})
+			} else {
+				req.flash('error_msg','Upload failed, not an image.');
 				res.redirect('/');
-			})
+			}
   })
 });
 
