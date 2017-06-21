@@ -89,7 +89,7 @@ router.post('/register', upload.single('avatar'), function(req, res){
 					if(user)
 						req.checkBody('username', 'Username already exists').notEqual(user.username.toLowerCase());
 					if(!errors.isEmpty()){
-						respondError(req, res)
+						respondError(req, errors)
 					} else {
 						const newUser = new User({
 							name: name,
