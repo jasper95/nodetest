@@ -1,45 +1,58 @@
-<h2 class="page-header">Register</h2>
-{{#if form_errors}}
-      {{#each form_errors}}
-        <div class="alert alert-danger">{{msg}}</div>
-      {{/each}}
-{{/if}}
-<form method="post" action="/users/register" enctype="multipart/form-data">
-   <div class="form-group">
-    <label>Name</label>
-    <input type="text" class="form-control" placeholder="Name" value="{{old_form.name}}" name="name">
-  </div>
-  <div class="form-group">
-    <label>Username</label>
-    <input type="text" class="form-control" placeholder="Username" value="{{old_form.username}}" name="username">
-  </div>
-   <div class="form-group">
-    <label>Email</label>
-    <input type="email" class="form-control" placeholder="Email" value="{{old_form.email}}" name="email">
-  </div>
-  <div class="form-group">
-    <label>Password</label>
-    <input type="password" class="form-control" placeholder="Password" name="password" value="{{old_form.password}}">
-  </div>
-  <div class="form-group">
-    <label>Confirm Password</label>
-    <input type="password" class="form-control" placeholder="Password" value="{{old_form.password2}}" name="password2">
-  </div>
-  <div class="form-group">
-        <label>Upload Image</label>
-        <div class="input-group">
-            <span class="input-group-btn">
-                <span class="btn btn-default btn-file">
-                    Browse… <input type="file" name="avatar" id="imgInp">
-                </span>
-            </span>
-            <input type="text" class="form-control" readonly>
-        </div>
-        <img id='img-upload'/>
+<div class="col-md-6 col-md-offset-3">
+  <h2 class="page-header">Signup</h2>
+  {{#if form_errors}}
+        {{#each form_errors}}
+          <div class="alert alert-danger">{{msg}}</div>
+        {{/each}}
+  {{/if}}
+  {{#if success_msg}}
+    <div class="alert alert-success">{{success_msg}}</div>
+  {{/if}}
+
+  {{#if error_msg}}
+    <div class="alert alert-danger">{{error_msg}}</div>
+  {{/if}}
+
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+  <form method="post" action="/users/register" enctype="multipart/form-data">
+     <div class="form-group">
+      <label>Name <span style="color: red">&#42;</span></label>
+      <input type="text" class="form-control" placeholder="Name" value="{{old_form.name}}" name="name">
     </div>
-  <input type="hidden" name="ext" id="ext"/>
-  <button type="submit" class="btn btn-default">Submit</button>
-</form>
+    <div class="form-group">
+      <label>Username <span style="color: red">&#42;</span></label>
+      <input type="text" class="form-control" placeholder="Username" value="{{old_form.username}}" name="username">
+    </div>
+     <div class="form-group">
+      <label>Email <span style="color: red">&#42;</span></label>
+      <input type="email" class="form-control" placeholder="Email" value="{{old_form.email}}" name="email">
+    </div>
+    <div class="form-group">
+      <label>Password <span style="color: red">&#42;</span></label>
+      <input type="password" class="form-control" placeholder="Password" name="password" value="{{old_form.password}}">
+    </div>
+    <div class="form-group">
+      <label>Confirm Password <span style="color: red">&#42;</span></label>
+      <input type="password" class="form-control" placeholder="Password" value="{{old_form.password2}}" name="password2">
+    </div>
+    <div class="form-group">
+      <label>Upload Image</label>
+      <div class="input-group">
+          <span class="input-group-btn">
+              <span class="btn btn-default btn-file">
+                  Browse… <input type="file" name="avatar" id="imgInp">
+              </span>
+          </span>
+          <input type="text" class="form-control" readonly>
+      </div>
+      <img id='img-upload' class="img-thumbnail" width="140" height="140"/>
+    </div>
+    <!-- <input type="hidden" name="ext" id="ext"/> -->
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+</div>
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script>
 $(document).ready( function() {
@@ -69,8 +82,8 @@ $(document).ready( function() {
 	}
 	$("#imgInp").change(function(){
 	    readURL(this);
-      var ext  = $(this).val().split('.').pop();
-      $('#ext').val(ext);
+      // var ext  = $(this).val().split('.').pop();
+      // $('#ext').val(ext);
 	});
 });
 </script>

@@ -1,28 +1,79 @@
- <h2 class="page-header">Dashboard</h2>
- {{#if user.hasAvatar}}
-  <img src="uploads/avatars/{{user.username}}.jpg" class="img-rounded" alt="Cinque Terre" width="100" height="100">
-{{else}}
-  <img src="uploads/default-user-image.png" class="img-rounded" alt="Cinque Terre" width="100" height="100">
-{{/if}}
+<div class="col-md-12">
+  <h2 class="page-header">Gallery</h2>
+  {{#if success_msg}}
+    <div class="alert alert-success">{{success_msg}}</div>
+  {{/if}}
 
-<p>{{ user.name}}</p>
+  {{#if error_msg}}
+    <div class="alert alert-danger">{{error_msg}}</div>
+  {{/if}}
 
-{{#each pictures}}
-  <img src="{{filename}}" class="img-rounded" width="100" height="100">
-{{/each}}
-<form action="/" method="POST" enctype="multipart/form-data">
-  <input type="file" id="picture" name="avatar">
-  <input type="submit" disabled id="upload" value="submit">
-</form>
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+  <div class="col-md-8">
+    {{#each pictures}}
+      <img src="{{filename}}" class="img-thumbnail" width="140" height="140">
+    {{/each}}
+  </div>
+  <div class="col-md-4">
+    {{#if user.hasAvatar}}
+      <img src="uploads/avatars/{{user.username}}.jpg" class="img-rounded" alt="Cinque Terre" width="100" height="100">
+    {{else}}
+      <img src="uploads/default-user-image.png" class="img-rounded" alt="Cinque Terre" width="100" height="100">
+    {{/if}}
+    <p>{{ user.name}}</p>
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Upload Image</label>
+        <div class="input-group">
+            <span class="input-group-btn">
+                <span class="btn btn-default btn-file">
+                    Browse… <input type="file" name="avatar" id="imgInp">
+                </span>
+            </span>
+            <input type="text" class="form-control" readonly>
+        </div>
+        <img id='img-upload' class="img-thumbnail" width="140" height="140"/>
+      </div>
+      <button type="submit" disabled id="upload" class="btn btn-default">Submit</button>
+    </form>
+  </div>
+</div>
 <script src="/js/jquery-3.2.1.min.js"></script>
 <script>
-  $(document).ready(function(){
-    let submit = $('#upload');
-    $('#picture').on('change', function(){
-      if($('#picture').get(0).files.length > 0)
+  $(document).ready( function() {
+    $(document).on('change', '.btn-file :file', function() {
+    	var input = $(this),
+    		label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    	input.trigger('fileselect', [label]);
+  	});
+  	$('.btn-file :file').on('fileselect', function(event, label) {
+  	    var input = $(this).parents('.input-group').find(':text'),
+  	        log = label;
+  	    if( input.length ) {
+  	        input.val(log);
+  	    } else {
+  	        if( log ) alert(log);
+  	    }
+  	});
+  	function readURL(input) {
+  	    if (input.files && input.files[0]) {
+  	        var reader = new FileReader();
+
+  	        reader.onload = function (e) {
+  	            $('#img-upload').attr('src', e.target.result);
+  	        }
+  	        reader.readAsDataURL(input.files[0]);
+  	    }
+  	}
+  	$("#imgInp").change(function(){
+        let submit = $('#upload');
+  	    readURL(this);
+        if($(this).get(0).files.length > 0)
           submit.prop("disabled", false);
-      else
+        else
           submit.prop('disabled', true);
-    })
+  	});
   });
 </script>
