@@ -1,13 +1,13 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var multer = require('multer');
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const multer = require('multer');
 
-var User = require('../models/user');
+const User = require('../models/user');
 
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
 		destination: function (req, file, cb) {
 			cb(null, 'public/uploads/avatars/')
 		},
@@ -27,7 +27,7 @@ function validateRegisterForm(req){
 	//req.checkBody('ext', 'Not a valid image').isValidImage();
 }
 
-var upload = multer({
+const upload = multer({
 	 storage: storage,
 	 fileFilter: function(req, file, cb){
 			validateRegisterForm(req)
@@ -63,31 +63,32 @@ router.get('/login', function(req, res){
 
 // Register User
 router.post('/register', upload.single('avatar'), function(req, res){
-	var name = req.body.name;
-	var email = req.body.email;
-	var username = req.body.username;
-	var password = req.body.password;
-	var password2 = req.body.password2;
-	var hasAvatar = (req.file) ? true : false;
+	const {name, email, username, password, password2} = req.body;
+	const hasAvatar = (req.file) ? true : false;
+
+	const respondError = (req, errors) => {
+		req.flash('form_errors', errors.useFirstErrorOnly().array());
+		req.session.oldForm = {
+			name : name,
+			email: email,
+			username: username,
+			password: password,
+			password2: password2,
+		};
+		res.redirect('/users/register')
+	}
 
 	if(!hasAvatar)
 		validateRegisterForm(req);
-	req.getValidationResult().then(function(errors) {
+
+	req.getValidationResult().then(errors => {
 		if(errors.isEmpty()){
-			User.getUserByUsername(req.body.username.toLowerCase(), function(err, user){
+			User.getUserByUsername(req.body.username.toLowerCase(), (err, user) => {
 					if(err) throw err;
 					if(user)
 						req.checkBody('username', 'Username already exists').notEqual(user.username.toLowerCase());
 					if(!errors.isEmpty()){
-						req.flash('form_errors', errors.array());
-						req.session.oldForm = {
-							name : name,
-							email: email,
-							username: username,
-							password: password,
-							password2: password2,
-						};
-						res.redirect('/users/register')
+						respondError(req, res)
 					} else {
 						const newUser = new User({
 							name: name,
@@ -104,6 +105,8 @@ router.post('/register', upload.single('avatar'), function(req, res){
 						res.redirect('/users/login');
 					}
 			});
+		} else {
+			respondError(req, errors)
 		}
 	});
 });

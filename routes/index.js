@@ -1,8 +1,8 @@
-var express = require('express');
-var multer = require('multer');
-var router = express.Router();
-var Picture = require('../models/picture');
-var randomstring = require('randomstring');
+const express = require('express');
+const multer = require('multer');
+const router = express.Router();
+const Picture = require('../models/picture');
+const randomstring = require('randomstring');
 
 // Get Homepage
 router.get('/', ensureAuthenticated, function(req, res){
@@ -15,8 +15,8 @@ router.get('/', ensureAuthenticated, function(req, res){
 });
 
 router.post('/', ensureAuthenticated, function (req, res) {
-	var filename  = randomstring.generate() + '.jpg';
-	var storage = multer.diskStorage({
+	const filename  = randomstring.generate() + '.jpg';
+	const storage = multer.diskStorage({
       destination: function (req, file, cb) {
           cb(null, 'public/uploads/pictures')
       },
@@ -25,7 +25,7 @@ router.post('/', ensureAuthenticated, function (req, res) {
       }
   });
 
-  var upload = multer({ storage: storage }).single('avatar');
+  const upload = multer({ storage: storage }).single('avatar');
 
   upload(req, res, function (err) {
       if (err) throw err;
