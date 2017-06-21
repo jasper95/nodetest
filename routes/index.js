@@ -21,7 +21,7 @@ const upload = multer({
 		const ext = file.originalname.split('.').pop();
 		isUploaded = (['jpg', 'png', 'jpeg'].indexOf(ext) >= 0);
 		if(isUploaded)
-			filename = randomstring.generate();
+			filename = randomstring.generate()+'.'+ext;
 		cb(null, isUploaded)
 	}
 }).single('avatar')
@@ -40,6 +40,7 @@ router.post('/', ensureAuthenticated, function (req, res) {
   upload(req, res, function (err) {
       if (err) throw err;
 			if(isUploaded){
+
 				Picture.create({filename : 'uploads/pictures/' + filename}, function(picErr, newPic){
 					req.flash('success_msg','Picture successfully uploaded');
 					res.redirect('/');

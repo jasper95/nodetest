@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jasper Bernales",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "*",
     "body-parser": "*",
